@@ -4,7 +4,7 @@ import { buildSchema } from 'graphql';
 import {randomBytes} from 'crypto';
 
 // Construct a schema, using GraphQL schema language
-var schema = buildSchema(`
+const schema = buildSchema(`
   input MessageInput {
     content: String
     author: String
@@ -36,10 +36,9 @@ class Message {
 }
 
 // Maps username to content
-var fakeDatabase = {};
-console.log(randomBytes(10).toString('hex'))
+const fakeDatabase = {};
 
-var root = {
+const root = {
   getMessage: ({id}) => {
     if (!fakeDatabase[id]) {
       throw new Error('no message exists with id ' + id);
@@ -48,7 +47,7 @@ var root = {
   },
   createMessage: ({input}) => {
     // Create a random id for our "database".
-    var id = randomBytes(10).toString('hex');
+    const id = randomBytes(10).toString('hex');
 
     fakeDatabase[id] = input;
     return new Message(id, input);
@@ -63,7 +62,7 @@ var root = {
   },
 };
 
-var app = express();
+const app = express();
 app.use('/graphql', graphqlHTTP({
   schema: schema,
   rootValue: root,
