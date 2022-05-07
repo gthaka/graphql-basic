@@ -1,6 +1,7 @@
 import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
 import { buildSchema } from 'graphql';
+import RandomDie from './RandomDie.js';
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
@@ -9,6 +10,13 @@ const schema = buildSchema(`
         quoteOfTheDay: String
         random: Float!
         rollThreeDice: [Int]
+        getDie(numSides: Int): RandomDie
+    }
+
+    type RandomDie {
+        numSides: Int!
+        rollOnce: Int!
+        roll(numRolls: Int!): [Int]
     }
 `);
 
@@ -48,6 +56,9 @@ const root = {
     },
     rollThreeDice: () => {
         return [1, 2, 3].map(_ => 1 + Math.floor(Math.random() * 6));
+    },
+    getDie: ({ numSides }) => {
+        return new RandomDie(numSides || 6);
     },
 };
 
